@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:8.0  # 也可以使用 mysql:5.7 或其他版本
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456  # 设置root用户密码
+      # MYSQL_DATABASE: mydatabase        # 容器启动时创建的默认数据库
+      # MYSQL_USER: myuser                # 可选：创建普通用户
+      # MYSQL_PASSWORD: mypassword        # 普通用户密码
+    ports:
+      - "3306:3306"  # 主机端口:容器端口
+    volumes:
+      - mysql_data:/var/lib/mysql   # 持久化数据
+      # - ./mysql-init:/docker-entrypoint-initdb.d  # 初始化SQL脚本目录
+    restart: unless-stopped  # 自动重启策略
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
